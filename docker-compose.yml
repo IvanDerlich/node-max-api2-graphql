@@ -1,13 +1,21 @@
+# using docker for developing with Windows is not recommended
+
 version: "3.9"
 services:
   frontend:
     build: ./fe
     ports:
       - "3000:3000"
+    volumes:
+      - ./fe:/app
+    command: ["npm", "start"]
     depends_on:
       - backend
 
   backend:
     build: ./be
     ports:
-      - "5000:5000"
+      - "8080:8080"
+    volumes:
+      - ./be:/app
+    command: ["npm", "run", "dev"]
