@@ -1,0 +1,9 @@
+{
+  "name": "node-max-api2",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "docker-compose down -v && docker-compose up --build"
+  },
+  "author": "Ivan Derlich",
+  "license": "ISC"
+}
