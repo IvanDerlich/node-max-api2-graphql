@@ -12,6 +12,16 @@ exports.getPosts = (req, res, next) => {
         },
         createdAt: new Date(),
       },
+      {
+        _id: "2",
+        title: "Second Post",
+        content: "This is the second post!",
+        imageUrl: "images/duck.jpg",
+        creator: {
+          name: "Ivan",
+        },
+        createdAt: new Date(),
+      },
     ],
   });
 };
