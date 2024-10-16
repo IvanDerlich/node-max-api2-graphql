@@ -59,3 +59,21 @@ exports.postPost = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getPost = (req, res, next) => {
+  console.log("getPost requested");
+  const postId = req.params.postId;
+  console.log("postId:", postId);
+  res.status(200).json({
+    post: {
+      _id: "1",
+      title: "First Post",
+      content: "This is the first post!",
+      imageUrl: "images/duck.jpg",
+      creator: {
+        name: "Maximilian",
+      },
+      createdAt: new Date(),
+    },
+  });
+};
