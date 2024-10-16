@@ -2,11 +2,9 @@ const express = require("express");
 const corsMiddleware = require("./middleware/cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
-
+const path = require("path");
 const PORT = process.env.LISTEN_PORT;
-
 const bodyParser = require("body-parser");
-
 const feedRoutes = require("./routes/feed");
 
 const app = express();
@@ -16,7 +14,16 @@ app.use(corsMiddleware);
 // Middleware to parse json data from incoming requests
 app.use(bodyParser.json());
 
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use("/feed", feedRoutes);
+
+app.use((error, req, res, next) => {
+  console.error("ERROR: ", error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  res.status(status).json({ message });
+});
 
 const connectDB = async () => {
   try {
