@@ -2,9 +2,8 @@
   "name": "node-max-api2",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm run restart:db && docker-compose down -v && docker-compose up --build",
-    "start:db": "docker-compose -f db/docker-compose.yml up -d",
-    "remove:db": "docker-compose -f db/docker-compose.yml down -v",
+    "start": "npm run restart:db && npm run restart",
+    "restart": "docker-compose down -v && docker-compose up --build",
     "restart:db": "docker-compose -f db/docker-compose.yml restart",
     "seeDbLogs": "docker-compose -f db/docker-compose.yml logs -f"
   },

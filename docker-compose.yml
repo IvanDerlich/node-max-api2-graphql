@@ -5,7 +5,7 @@ services:
   frontend:
     build: ./fe
     ports:
-      - "3000:3000"
+      - "${FE_PORT_OUTGOING}:${FE_PORT_INCOMING}"
     volumes:
       - ./fe:/app
     command: ["npm", "start"]
@@ -15,7 +15,7 @@ services:
   backend:
     build: ./be
     ports:
-      - "8080:8080"
+      - "${BE_PORT_OUTGOING}:${BE_PORT_INCOMING}"
     volumes:
       - ./be:/app
     command: ["npm", "run", "dev"]
