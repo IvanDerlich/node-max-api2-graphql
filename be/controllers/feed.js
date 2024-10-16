@@ -2,34 +2,24 @@ const { validationResult } = require("express-validator");
 
 const Post = require("../models/post");
 
-exports.getPosts = (req, res, next) => {
+exports.getPosts = async (req, res, next) => {
   console.log("getPosts requested");
-  res.status(200).json({
-    posts: [
-      {
-        _id: "1",
-        title: "First Post",
-        content: "This is the first post!",
-        imageUrl: "images/duck.jpg",
-        creator: {
-          name: "Maximilian",
-        },
-        createdAt: new Date(),
-      },
-      {
-        _id: "2",
-        title: "Second Post",
-        content: "This is the second post!",
-        imageUrl: "images/duck.jpg",
-        creator: {
-          name: "Ivan",
-        },
-        createdAt: new Date(),
-      },
-    ],
-  });
+  try {
+    const posts = await Post.find();
+    res.status(200).json({
+      message: "Fetched posts successfully.",
+      posts,
+    });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 exports.postPost = async (req, res, next) => {
+  console.log("postPost requested");
+  console.log("body:", req.body);
   const errors = validationResult(req);
   try {
     if (!errors.isEmpty()) {
@@ -37,8 +27,7 @@ exports.postPost = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    console.log("postPost requested");
-    console.log("body:", req.body);
+
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -60,20 +49,22 @@ exports.postPost = async (req, res, next) => {
   }
 };
 
-exports.getPost = (req, res, next) => {
+exports.getPost = async (req, res, next) => {
   console.log("getPost requested");
   const postId = req.params.postId;
   console.log("postId:", postId);
-  res.status(200).json({
-    post: {
-      _id: "1",
-      title: "First Post",
-      content: "This is the first post!",
-      imageUrl: "images/duck.jpg",
-      creator: {
-        name: "Maximilian",
-      },
-      createdAt: new Date(),
-    },
-  });
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json({ message: "Post fetched.", post });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
