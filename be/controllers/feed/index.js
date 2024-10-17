@@ -42,5 +42,20 @@ exports.deletePost = async (req, res, next) => {
   console.log("deletePost requested");
   const postId = req.params.postId;
   console.log("postId:", postId);
-  res.status(200).json({ message: "Action called succesfully", postId });
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Check if user is authorized to delete post
+    res.status(200).json({ message: "Action called succesfully", postId });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };

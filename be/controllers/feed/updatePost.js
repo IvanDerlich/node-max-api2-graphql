@@ -1,6 +1,5 @@
 const Post = require("../../models/post");
-const fs = require("fs");
-const path = require("path");
+const clearImage = require("./helpers").clearImage;
 
 module.exports = async (req, res, next) => {
   console.log("updatePost requested");
@@ -22,11 +21,15 @@ module.exports = async (req, res, next) => {
       throw error;
     }
     const post = await Post.findById(id);
+
     if (!post) {
       const error = new Error("Could not find post.");
       error.statusCode = 404;
       throw error;
     }
+
+    // check if user is authorized to update post
+
     const oldImageUrl = post.imageUrl;
     console.log("oldImageUrl:", oldImageUrl);
 
@@ -48,12 +51,4 @@ module.exports = async (req, res, next) => {
     }
     next(error);
   }
-};
-
-const clearImage = (filePath) => {
-  console.log("clearImage requested");
-  console.log("filePath:", filePath);
-  filePath = path.join(__dirname, "../..", filePath);
-  console.log("filePath:", filePath);
-  fs.unlink(filePath, (err) => console.log(err));
 };
