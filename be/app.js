@@ -6,18 +6,42 @@ const path = require("path");
 const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const feedRoutes = require("./routes/feed");
+const multer = require("multer");
 
 const app = express();
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${new Date().toISOString()}-${file.originalname}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const validMimeTypes = ["image/png", "image/jpg", "image/jpeg"];
+  if (
+    validMimeTypes.includes(file.mimetype) &&
+    file.originalname.match(/\.(jpg|jpeg|png)$/)
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.use(corsMiddleware);
 
 // Middleware to parse json data from incoming requests
 app.use(bodyParser.json());
+app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
+// Middleware to help the client access the images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed", feedRoutes);
 
+// Middleware to handle errors
 app.use((error, req, res, next) => {
   console.error("ERROR: ", error);
   const status = error.statusCode || 500;
@@ -27,7 +51,7 @@ app.use((error, req, res, next) => {
 
 const connectDB = async () => {
   try {
-    console.log("CONNECTION STRING: ", process.env.DB_CONNECTION_STRING);
+    // console.log("CONNECTION STRING: ", process.env.DB_CONNECTION_STRING);
     const connection = await mongoose.connect(process.env.DB_CONNECTION_STRING);
     console.log(`MongoDB connected: ${connection.connection.host}`);
   } catch (error) {

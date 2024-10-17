@@ -106,6 +106,10 @@ class Feed extends Component {
       editLoading: true,
     });
     // Set up data (with image!)
+    const formData = new FormData();
+    formData.append("title", postData.title);
+    formData.append("content", postData.content);
+    formData.append("image", postData.image);
     let url = "http://localhost:8080/feed/post";
     let method = "POST";
     if (this.state.editPost) {
@@ -119,10 +123,10 @@ class Feed extends Component {
 
     fetch(url, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postDataValid),
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      body: formData,
     })
       // fetch(url)
       .then((res) => {
