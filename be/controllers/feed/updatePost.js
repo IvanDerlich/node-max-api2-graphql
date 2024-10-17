@@ -2,14 +2,6 @@ const Post = require("../../models/post");
 const fs = require("fs");
 const path = require("path");
 
-const clearImage = (filePath) => {
-  console.log("clearImage requested");
-  console.log("filePath:", filePath);
-  filePath = path.join(__dirname, "..", filePath);
-  console.log("filePath:", filePath);
-  fs.unlink(filePath, (err) => console.log(err));
-};
-
 module.exports = async (req, res, next) => {
   console.log("updatePost requested");
   console.log("req.file: ", req.file);
@@ -56,4 +48,12 @@ module.exports = async (req, res, next) => {
     }
     next(error);
   }
+};
+
+const clearImage = (filePath) => {
+  console.log("clearImage requested");
+  console.log("filePath:", filePath);
+  filePath = path.join(__dirname, "../..", filePath);
+  console.log("filePath:", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
 };
