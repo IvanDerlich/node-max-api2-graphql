@@ -122,17 +122,14 @@ class Feed extends Component {
       url += "/" + this.state.editPost._id;
       method = "PUT";
     }
-    const postDataValid = {
-      title: postData.title,
-      content: postData.content,
-      image: postData.image,
-    };
+    // const postDataValid = {
+    //   title: postData.title,
+    //   content: postData.content,
+    //   image: postData.image,
+    // };
 
     fetch(url, {
       method,
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
       body: formData,
     })
       // fetch(url)

@@ -8,6 +8,7 @@ const {
   postPost,
   getPost,
   updatePost,
+  deletePost,
 } = require("../controllers/feed");
 
 const postPostValidator = [
@@ -24,5 +25,6 @@ router.get("/posts", getPosts);
 router.post("/post", postPostValidator, postPost);
 router.get("/post/:postId", getPost);
 router.put("/post/:postId", putPostValidator, updatePost);
+router.delete("/post/:postId", deletePost);
 
 module.exports = router;

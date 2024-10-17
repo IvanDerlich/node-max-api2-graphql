@@ -37,3 +37,10 @@ exports.getPost = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.deletePost = async (req, res, next) => {
+  console.log("deletePost requested");
+  const postId = req.params.postId;
+  console.log("postId:", postId);
+  res.status(200).json({ message: "Action called succesfully", postId });
+};
