@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const Post = require("../models/post");
+const Post = require("../../models/post");
 const fs = require("fs");
 const path = require("path");
 
@@ -112,7 +112,7 @@ exports.updatePost = async (req, res, next) => {
     console.log("new imageUrl:", post.imageUrl);
 
     const response = await post.save();
-    // to do: Fix why is not deleting the file properly
+
     if (imageUrl !== oldImageUrl) {
       clearImage(oldImageUrl);
     }
