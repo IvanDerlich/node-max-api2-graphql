@@ -15,9 +15,14 @@ const postPostValidator = [
   body("content").trim().isLength({ min: 5 }),
 ];
 
+const putPostValidator = [
+  body("title").trim().isLength({ min: 5 }),
+  body("content").trim().isLength({ min: 5 }),
+];
+
 router.get("/posts", getPosts);
 router.post("/post", postPostValidator, postPost);
 router.get("/post/:postId", getPost);
-router.put("/post/:postId", postPostValidator, updatePost);
+router.put("/post/:postId", putPostValidator, updatePost);
 
 module.exports = router;
