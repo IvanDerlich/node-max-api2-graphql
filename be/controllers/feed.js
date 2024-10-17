@@ -80,6 +80,8 @@ exports.getPost = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   console.log("updatePost requested");
+  console.log("req.file: ", req.file);
+  console.log("req.body.image: ", req.body.image);
   const id = req.params.postId;
   console.log("id:", id);
   const imageUrl = req.file ? req.file.path : req.body.image;
@@ -101,13 +103,18 @@ exports.updatePost = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    const oldImageUrl = post.imageUrl;
+    console.log("oldImageUrl:", oldImageUrl);
+
     post.title = title;
     post.content = content;
     post.imageUrl = imageUrl;
+    console.log("new imageUrl:", post.imageUrl);
 
     const response = await post.save();
-    if (imageUrl !== post.imageUrl) {
-      clearImage(post.imageUrl);
+    // to do: Fix why is not deleting the file properly
+    if (imageUrl !== oldImageUrl) {
+      clearImage(oldImageUrl);
     }
 
     return res.status(200).json({ message: "Post updated!", post: response });
@@ -120,6 +127,9 @@ exports.updatePost = async (req, res, next) => {
 };
 
 const clearImage = (filePath) => {
+  console.log("clearImage requested");
+  console.log("filePath:", filePath);
   filePath = path.join(__dirname, "..", filePath);
+  console.log("filePath:", filePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
