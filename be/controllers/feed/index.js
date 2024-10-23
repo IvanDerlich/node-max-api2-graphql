@@ -1,4 +1,7 @@
+const { response } = require("express");
 const Post = require("../../models/post");
+const clearImage = require("./helpers").clearImage;
+
 exports.updatePost = require("./updatePost");
 exports.postPost = require("./postPost");
 
@@ -39,7 +42,7 @@ exports.getPost = async (req, res, next) => {
 };
 
 exports.deletePost = async (req, res, next) => {
-  console.log("deletePost requested");
+  console.log("deletePost requested in the backend");
   const postId = req.params.postId;
   console.log("postId:", postId);
   try {
@@ -49,9 +52,13 @@ exports.deletePost = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
     // Check if user is authorized to delete post
-    res.status(200).json({ message: "Action called succesfully", postId });
+
+    clearImage(post.imageUrl);
+    const result = await Post.findByIdAndDelete(postId);
+    console.log("result:", result);
+
+    res.status(200).json({ message: "Post deleted succesfully", result });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

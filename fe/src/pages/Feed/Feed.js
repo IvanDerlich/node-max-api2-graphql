@@ -182,8 +182,12 @@ class Feed extends Component {
   };
 
   deletePostHandler = (postId) => {
+    console.log("postId for deletion in frontend: ", postId);
     this.setState({ postsLoading: true });
-    fetch("URL")
+    const url = "http://localhost:8080/feed/post/" + postId;
+    fetch(url, {
+      method: "DELETE",
+    })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Deleting a post failed!");
