@@ -6,6 +6,7 @@ const path = require("path");
 const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const feedRoutes = require("./routes/feed");
+const authRoutes = require("./routes/auth");
 const multer = require("multer");
 
 const app = express();
@@ -40,6 +41,7 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed", feedRoutes);
+app.use("/auth", authRoutes);
 
 // Middleware to handle errors
 app.use((error, req, res, next) => {
