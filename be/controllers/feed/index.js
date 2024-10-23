@@ -7,11 +7,18 @@ exports.postPost = require("./postPost");
 
 exports.getPosts = async (req, res, next) => {
   console.log("getPosts requested");
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+
   try {
-    const posts = await Post.find();
+    const totalItems = await Post.find().countDocuments();
+    const posts = await Post.find()
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
     res.status(200).json({
       message: "Fetched posts successfully.",
       posts,
+      totalItems,
     });
   } catch (error) {
     if (!error.statusCode) {
