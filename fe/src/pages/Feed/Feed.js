@@ -22,7 +22,7 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    console.log("Component Mounted");
+    // console.log("Component Mounted");
     fetch("http://localhost:8080/status", {
       headers: {
         Authorization: "Bearer " + this.props.token,
@@ -101,7 +101,7 @@ class Feed extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
+        // console.log("aoeuao", resData);
       })
       .catch(this.catchError);
   };
