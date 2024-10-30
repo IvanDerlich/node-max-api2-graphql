@@ -28,6 +28,12 @@ module.exports = async (req, res, next) => {
       throw error;
     }
 
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not authorized!");
+      error.statusCode = 403;
+      throw error;
+    }
+
     // check if user is authorized to update post
 
     const oldImageUrl = post.imageUrl;

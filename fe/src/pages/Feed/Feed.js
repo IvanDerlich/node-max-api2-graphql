@@ -22,8 +22,14 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch("URL")
+    console.log("Component Mounted");
+    fetch("http://localhost:8080/status", {
+      headers: {
+        Authorization: "Bearer " + this.props.token,
+      },
+    })
       .then((res) => {
+        console.log("res from status: ", res);
         if (res.status !== 200) {
           throw new Error("Failed to fetch user status.");
         }
@@ -62,7 +68,6 @@ class Feed extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log("resData: ", resData);
         this.setState({
           posts: resData.posts.map((post) => {
             return {

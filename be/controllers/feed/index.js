@@ -1,4 +1,5 @@
 const Post = require("../../models/post");
+const User = require("../../models/user");
 const clearImage = require("./helpers").clearImage;
 
 exports.updatePost = require("./updatePost");
@@ -12,6 +13,7 @@ exports.getPosts = async (req, res, next) => {
   try {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
+      .populate("creator")
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
     res.status(200).json({
@@ -58,11 +60,19 @@ exports.deletePost = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    // Check if user is authorized to delete post
+
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not authorized!");
+      error.statusCode = 403;
+      throw error;
+    }
 
     clearImage(post.imageUrl);
     const result = await Post.findByIdAndDelete(postId);
-    console.log("result:", result);
+
+    const user = await User.findById(req.userId);
+    user.posts.pull(postId);
+    await user.save();
 
     res.status(200).json({ message: "Post deleted succesfully", result });
   } catch (error) {

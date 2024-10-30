@@ -28,8 +28,6 @@ exports.signup = async (req, res, next) => {
     }
     next(error);
   }
-
-  res.status(201).json({ message: "User created..." });
 };
 
 exports.signin = async (req, res, next) => {

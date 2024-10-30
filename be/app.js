@@ -6,6 +6,7 @@ const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
+const statusRoutes = require("./routes/status");
 const multer = require("multer");
 const cors = require("cors");
 
@@ -57,6 +58,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed", feedRoutes);
 app.use("/auth", authRoutes);
+app.use("/status", statusRoutes);
 
 // Middleware to handle errors
 app.use((error, req, res, next) => {
