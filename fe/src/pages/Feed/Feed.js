@@ -134,6 +134,9 @@ class Feed extends Component {
 
     fetch(url, {
       method,
+      headers: {
+        Authorization: "Bearer " + this.props.token,
+      },
       body: formData,
     })
       // fetch(url)
@@ -191,6 +194,9 @@ class Feed extends Component {
     const url = "http://localhost:8080/feed/post/" + postId;
     fetch(url, {
       method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + this.props.token,
+      },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {

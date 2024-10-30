@@ -23,9 +23,9 @@ const putPostValidator = [
 ];
 
 router.get("/posts", isAuth, getPosts);
-router.post("/post", postPostValidator, postPost);
-router.get("/post/:postId", getPost);
-router.put("/post/:postId", putPostValidator, updatePost);
-router.delete("/post/:postId", deletePost);
+router.post("/post", isAuth, postPostValidator, postPost);
+router.get("/post/:postId", isAuth, getPost);
+router.put("/post/:postId", isAuth, putPostValidator, updatePost);
+router.delete("/post/:postId", isAuth, deletePost);
 
 module.exports = router;
