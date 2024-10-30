@@ -8,5 +8,8 @@
     "seeDbLogs": "docker-compose -f db/docker-compose.yml logs -f"
   },
   "author": "Ivan Derlich",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
 }

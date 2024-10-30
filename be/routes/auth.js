@@ -1,6 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { signup } = require("../controllers/auth");
+const { signup, signin } = require("../controllers/auth");
 const User = require("../models/user");
 
 const router = express.Router();
@@ -24,6 +24,12 @@ const signupValidator = [
     .withMessage("Password must be at least 5 characters"),
 ];
 
+const signinValidator = [
+  body("email").not().isEmpty().withMessage("Please enter an email"),
+  body("password").not().isEmpty().withMessage("Please enter a password"),
+];
+
 router.put("/signup", signupValidator, signup);
+router.post("/login", signinValidator, signin);
 
 module.exports = router;

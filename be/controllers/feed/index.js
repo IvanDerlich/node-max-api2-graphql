@@ -1,4 +1,3 @@
-const { response } = require("express");
 const Post = require("../../models/post");
 const clearImage = require("./helpers").clearImage;
 
@@ -6,7 +5,7 @@ exports.updatePost = require("./updatePost");
 exports.postPost = require("./postPost");
 
 exports.getPosts = async (req, res, next) => {
-  console.log("getPosts requested");
+  // console.log("getPosts requested");
   const currentPage = req.query.page || 1;
   const perPage = 2;
 

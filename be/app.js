@@ -1,5 +1,4 @@
 const express = require("express");
-const corsMiddleware = require("./middleware/cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const path = require("path");
@@ -8,8 +7,24 @@ const bodyParser = require("body-parser");
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
 const multer = require("multer");
+const cors = require("cors");
+
+const allowedOrigins = ["http://localhost:3000"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
 const app = express();
+
+// Middleware to handle CORS
+app.use(cors(corsOptions));
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -31,10 +46,10 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-app.use(corsMiddleware);
-
 // Middleware to parse json data from incoming requests
 app.use(bodyParser.json());
+
+// Middleware to handle file uploads
 app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
 // Middleware to help the client access the images
