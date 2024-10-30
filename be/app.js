@@ -81,8 +81,24 @@ const connectDB = async () => {
 };
 
 const startServer = () => {
-  app.listen(PORT, () => {
+  const httpServer = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+  });
+
+  const io = require("./socket").init(httpServer, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"],
+    },
+  });
+  io.on("connection", (socket) => {
+    console.log("Client connected through socket.io");
+    console.log("socket.id: ", socket.id);
+    // console.log("socket: ", socket);
+    // console.log("socket.handshake: ", socket.handshake);
+  });
+  io.on("disconnect", (socket) => {
+    console.log("Client disconnected");
   });
 };
 
