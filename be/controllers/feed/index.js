@@ -1,6 +1,7 @@
 const Post = require("../../models/post");
 const User = require("../../models/user");
 const clearImage = require("./helpers").clearImage;
+const io = require("../../socket");
 
 exports.updatePost = require("./updatePost");
 exports.postPost = require("./postPost");
@@ -73,6 +74,8 @@ exports.deletePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.pull(postId);
     await user.save();
+
+    io.getIO().emit("posts", { action: "delete", post: postId });
 
     res.status(200).json({ message: "Post deleted succesfully", result });
   } catch (error) {

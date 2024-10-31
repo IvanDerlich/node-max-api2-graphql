@@ -42,7 +42,17 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
-    openSocket("http://localhost:8080");
+    const socket = openSocket("http://localhost:8080");
+    socket.on("posts", (data) => {
+      console.log("Subscribing to posts");
+      console.log("data: ", data);
+      if (data.action === "create") {
+        this.addPost(data.post);
+      }
+      if (data.action === "delete") {
+        this.loadPosts();
+      }
+    });
   }
 
   addPost = (post) => {
