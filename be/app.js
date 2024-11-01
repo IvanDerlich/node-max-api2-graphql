@@ -4,9 +4,6 @@ const mongoose = require("mongoose");
 const path = require("path");
 const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
-const statusRoutes = require("./routes/status");
 const multer = require("multer");
 const cors = require("cors");
 
@@ -56,10 +53,6 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 // Middleware to help the client access the images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use("/feed", feedRoutes);
-app.use("/auth", authRoutes);
-app.use("/status", statusRoutes);
-
 // Middleware to handle errors
 app.use((error, req, res, next) => {
   console.error("ERROR: ", error);
@@ -81,24 +74,8 @@ const connectDB = async () => {
 };
 
 const startServer = () => {
-  const httpServer = app.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-  });
-
-  const io = require("./socket").init(httpServer, {
-    cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"],
-    },
-  });
-  io.on("connection", (socket) => {
-    console.log("Client connected through socket.io");
-    console.log("socket.id: ", socket.id);
-    // console.log("socket: ", socket);
-    // console.log("socket.handshake: ", socket.handshake);
-  });
-  io.on("disconnect", (socket) => {
-    console.log("Client disconnected");
   });
 };
 
