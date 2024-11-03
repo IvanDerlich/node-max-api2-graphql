@@ -6,6 +6,9 @@ const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const cors = require("cors");
+const { createHandler } = require("graphql-http/lib/use/express");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolver = require("./graphql/resolvers");
 
 const allowedOrigins = ["http://localhost:3000"];
 const corsOptions = {
@@ -52,6 +55,11 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
 // Middleware to help the client access the images
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+app.use(
+  "/graphql",
+  createHandler({ schema: graphqlSchema, rootValue: graphqlResolver })
+);
 
 // Middleware to handle errors
 app.use((error, req, res, next) => {

@@ -10,6 +10,8 @@
   "author": "Ivan Derlich",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "express-graphql": "^0.12.0",
+    "graphql": "^16.9.0"
   }
 }
