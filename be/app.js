@@ -5,26 +5,26 @@ const path = require("path");
 const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const multer = require("multer");
-// const cors = require("cors");
+const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
 
-// const allowedOrigins = ["http://localhost:3000"];
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (allowedOrigins.includes(origin) || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-// };
+const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
 const app = express();
 
 // Middleware to handle CORS
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -62,6 +62,15 @@ app.use(
     schema: graphqlSchema,
     rootValue: graphqlResolver,
     graphiql: true,
+    formatError(err) {
+      if (!err.originalError) {
+        return err;
+      }
+      const data = err.originalError.data;
+      const message = err.message || "An error occurred.";
+      const code = err.originalError.code || 500;
+      return { message, status: code, data };
+    },
   })
 );
 
