@@ -9,6 +9,7 @@ const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
+const auth = require("./middleware/auth");
 
 const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
 const corsOptions = {
@@ -55,6 +56,8 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
 // Middleware to help the client access the images
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+app.use(auth);
 
 app.use(
   "/graphql",

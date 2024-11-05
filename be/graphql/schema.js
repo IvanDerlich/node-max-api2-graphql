@@ -48,8 +48,15 @@ module.exports = buildSchema(`
     tokenExpiration: String!
   }
 
+  input PostInputData {
+    title: String!
+    content: String!
+    imageUrl: String!
+  }
+
   type RootMutation {
     createUser(userInput: UserInputData): User!
+    createPost(postInput: PostInputData): Post!
   }
 
   type RootQuery {
