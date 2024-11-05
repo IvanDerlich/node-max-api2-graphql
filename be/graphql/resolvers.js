@@ -70,7 +70,7 @@ module.exports = {
           userId: user._id.toString(),
           email: user.email,
         },
-        "somesupersecretsecret",
+        process.env.JWT_SECRET,
         { expiresIn: EXPIRATION }
       );
       console.log("userid: ", user._id.toString());

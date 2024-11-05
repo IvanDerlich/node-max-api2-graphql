@@ -166,6 +166,7 @@ class Feed extends Component {
       method: "POST",
       headers: {
         Authorization: "Bearer " + this.props.token,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(graphqlQuery),
     })
@@ -181,6 +182,7 @@ class Feed extends Component {
       })
       .then((resData) => {
         console.log("resData: ", resData);
+
         const post = {
           _id: resData.post._id,
           title: resData.post.title,
