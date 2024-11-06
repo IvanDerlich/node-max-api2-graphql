@@ -56,18 +56,51 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch("http://localhost:8080/feed/posts?page=" + page, {
+
+    const graphqlQuery = {
+      query: `
+        query {
+          getPosts(page: ${page}) {
+            posts {
+              _id
+              title
+              content
+              imageUrl
+              creator {
+                name
+              }
+              createdAt
+            }
+            totalItems
+          }
+        }`,
+    };
+
+    console.log("graphqlQuery: ", graphqlQuery);
+
+    fetch("http://localhost:8080/graphql", {
       headers: {
         Authorization: "Bearer " + this.props.token,
+        "Content-Type": "application/json",
       },
+      method: "POST",
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch posts.");
+        if (res.errors) {
+          const status = res.errors[0].status;
+          if (status === 422) {
+            throw new Error("Page not found.");
+          } else if (status === 401) {
+            throw new Error("Not authenticated.");
+          } else {
+            throw new Error("Failed to fetch posts.");
+          }
         }
         return res.json();
       })
       .then((resData) => {
+        console.log("resData: ", resData);
         this.setState({
           posts: resData.posts.map((post) => {
             return {

@@ -141,4 +141,45 @@ module.exports = {
       throw err;
     }
   },
+  async getPosts({ currentPage }, req) {
+    console.log("getPosts resolver activated");
+    try {
+      if (!req.isAuth) {
+        const error = new Error("Not authenticated!");
+        error.code = 401;
+        throw error;
+      }
+      if (!currentPage) {
+        currentPage = 1;
+      }
+      const perPage = 2;
+      const totalItems = await Post.find().countDocuments();
+
+      // if page is greater than the number of pages
+      if (currentPage > Math.ceil(totalItems / perPage)) {
+        const error = new Error("Page not found.");
+        error.code = 422;
+        throw error;
+      }
+
+      const posts = await Post.find()
+        .sort({ createdAt: -1 })
+        .populate("creator")
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+      console.log("posts[0]._doc: ", posts[0]._doc);
+      return {
+        posts: posts.map((p) => ({
+          ...p._doc,
+          _id: p._id.toString(),
+          createdAt: p.createdAt.toISOString(),
+          updatedAt: p.updatedAt.toISOString(),
+        })),
+        totalItems,
+      };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  },
 };

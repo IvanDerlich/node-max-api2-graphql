@@ -71,6 +71,8 @@ class App extends Component {
         }
       `,
     };
+    console.log("graphqlQuery: ", graphqlQuery);
+
     fetch("http://localhost:8080/graphql", {
       method: "POST",
       headers: {
