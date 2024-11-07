@@ -102,13 +102,13 @@ class Feed extends Component {
       .then((resData) => {
         console.log("resData: ", resData);
         this.setState({
-          posts: resData.posts.map((post) => {
+          posts: resData.data.getPosts.posts.map((post) => {
             return {
               ...post,
               imagePath: post.imageUrl,
             };
           }),
-          totalPosts: resData.totalItems,
+          totalPosts: resData.data.getPosts.totalItems,
           postsLoading: false,
         });
       })

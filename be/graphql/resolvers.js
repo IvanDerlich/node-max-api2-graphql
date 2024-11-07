@@ -167,7 +167,6 @@ module.exports = {
         .populate("creator")
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
-      console.log("posts[0]._doc: ", posts[0]._doc);
       return {
         posts: posts.map((p) => ({
           ...p._doc,
