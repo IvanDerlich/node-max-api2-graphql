@@ -57,8 +57,6 @@ class Feed extends Component {
       this.setState({ postPage: page });
     }
 
-    // console.log("page: ", page);
-
     const graphqlQuery = {
       query: `
         query {
@@ -67,6 +65,7 @@ class Feed extends Component {
               _id
               title
               content
+              imageUrl
               creator {
                 name
               }
@@ -160,14 +159,27 @@ class Feed extends Component {
     this.setState({ isEditing: false, editPost: null });
   };
 
-  finishEditHandler = (postData) => {
+  finishEditHandler = async (postData) => {
+    console.log("postData: ", postData);
+    console.log("Hola!");
     this.setState({
       editLoading: true,
     });
-    // Set up data (with image!)
     const formData = new FormData();
-    formData.append("title", postData.title);
-    formData.append("content", postData.content);
+    if (this.state.editPost) {
+      formData.append("oldPath", this.state.editPost.imagePath);
+    }
+
+    const response = await fetch("http://localhost:8080/post-image", {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + this.props.token,
+      },
+      body: formData,
+    });
+    const responseData = await response.json();
+    const { imageUrl } = responseData;
+
     formData.append("image", postData.image);
     let graphqlQuery = {
       query: `
@@ -176,7 +188,7 @@ class Feed extends Component {
             postInput: { 
               title: "${postData.title}",
               content: "${postData.content}",
-              imageUrl: "Some URL"
+              imageUrl: "${imageUrl}"
             })
             {
               _id
@@ -218,6 +230,7 @@ class Feed extends Component {
           content: resData.data.createPost.content,
           creator: resData.data.createPost.creator,
           createdAt: resData.data.createPost.createdAt,
+          imagePath: resData.data.createPost.imageUrl,
         };
         console.log("post: ", post);
         this.setState((prevState) => {

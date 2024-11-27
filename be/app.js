@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const path = require("path");
+const fs = require("fs");
 const PORT = process.env.LISTEN_PORT;
 const bodyParser = require("body-parser");
 const multer = require("multer");
@@ -9,7 +10,8 @@ const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
-const auth = require("./middleware/auth");
+const authMiddleware = require("./middleware/auth");
+const { clearImage } = require("./controllers/feed/helpers");
 
 const allowedOrigins = ["http://localhost:3000", "http://localhost:8080"];
 const corsOptions = {
@@ -57,7 +59,25 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 // Middleware to help the client access the images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use(auth);
+// Why not move this to the top of multer so that unauthenticated users can't upload images and occupy server space?
+app.use(authMiddleware);
+
+app.put("/post-image", (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error("Not authenticated.");
+  }
+  if (!req.file) {
+    return res.status(400).json({ message: "No file provided." });
+  }
+  console.log("req.file: ", req.file);
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+  return res.status(201).json({
+    message: "File stored.",
+    filePath: req.file.path,
+  });
+});
 
 app.use(
   "/graphql",
@@ -104,3 +124,11 @@ const startServer = () => {
 };
 
 connectDB().then(startServer);
+
+exports.clearImage = (filePath) => {
+  // console.log("clearImage requested");
+  // console.log("filePath:", filePath);
+  filePath = path.join(__dirname, "../..", filePath);
+  console.log("filePath:", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
+};
