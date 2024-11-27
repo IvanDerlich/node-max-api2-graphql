@@ -57,6 +57,8 @@ class Feed extends Component {
       this.setState({ postPage: page });
     }
 
+    // console.log("page: ", page);
+
     const graphqlQuery = {
       query: `
         query {
@@ -65,7 +67,6 @@ class Feed extends Component {
               _id
               title
               content
-              imageUrl
               creator {
                 name
               }
@@ -101,6 +102,7 @@ class Feed extends Component {
       })
       .then((resData) => {
         console.log("resData: ", resData);
+        // Reload posts
         this.setState({
           posts: resData.data.getPosts.posts.map((post) => {
             return {
@@ -167,12 +169,6 @@ class Feed extends Component {
     formData.append("title", postData.title);
     formData.append("content", postData.content);
     formData.append("image", postData.image);
-    // let url = "http://localhost:8080/feed/post";
-    // let method = "POST";
-    // if (this.state.editPost) {
-    //   url += "/" + this.state.editPost._id;
-    //   method = "PUT";
-    // }
     let graphqlQuery = {
       query: `
         mutation {
@@ -231,8 +227,9 @@ class Feed extends Component {
               (p) => p._id === prevState.editPost._id
             );
             updatedPosts[postIndex] = post;
-          } else if (prevState.posts.length < 2) {
-            updatedPosts = prevState.posts.concat(post);
+          } else {
+            updatedPosts.pop();
+            updatedPosts.unshift(post);
           }
           return {
             posts: updatedPosts,
@@ -241,6 +238,8 @@ class Feed extends Component {
             editLoading: false,
           };
         });
+        // this.setState({});
+        // this.loadPosts();
       })
       .catch((err) => {
         console.log(err);

@@ -141,22 +141,23 @@ module.exports = {
       throw err;
     }
   },
-  async getPosts({ currentPage }, req) {
-    console.log("getPosts resolver activated");
+  async getPosts({ page }, req) {
+    // console.log("getPosts resolver activated");
+    // console.log("Current page: ", page);
     try {
       if (!req.isAuth) {
         const error = new Error("Not authenticated!");
         error.code = 401;
         throw error;
       }
-      if (!currentPage) {
-        currentPage = 1;
+      if (!page) {
+        page = 1;
       }
       const perPage = 2;
       const totalItems = await Post.find().countDocuments();
 
       // if page is greater than the number of pages
-      if (currentPage > Math.ceil(totalItems / perPage)) {
+      if (page > Math.ceil(totalItems / perPage)) {
         const error = new Error("Page not found.");
         error.code = 422;
         throw error;
@@ -164,9 +165,10 @@ module.exports = {
 
       const posts = await Post.find()
         .sort({ createdAt: -1 })
-        .populate("creator")
-        .skip((currentPage - 1) * perPage)
-        .limit(perPage);
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .populate("creator");
+
       return {
         posts: posts.map((p) => ({
           ...p._doc,
