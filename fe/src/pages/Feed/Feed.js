@@ -166,6 +166,7 @@ class Feed extends Component {
       editLoading: true,
     });
     const formData = new FormData();
+    formData.append("image", postData.image);
     if (this.state.editPost) {
       formData.append("oldPath", this.state.editPost.imagePath);
     }
@@ -177,8 +178,11 @@ class Feed extends Component {
       },
       body: formData,
     });
+    // console.log("response: ", response);
     const responseData = await response.json();
-    const { imageUrl } = responseData;
+    // console.log("responseData: ", responseData);
+    const { filePath: imageUrl } = responseData;
+    // console.log("imageUrl: ", imageUrl);
 
     formData.append("image", postData.image);
     let graphqlQuery = {

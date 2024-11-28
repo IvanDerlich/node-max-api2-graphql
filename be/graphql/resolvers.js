@@ -183,4 +183,8 @@ module.exports = {
       throw err;
     }
   },
+
+  async getSinglePost(postId, req) {
+    console.log("getSinglePost resolver activated");
+  },
 };

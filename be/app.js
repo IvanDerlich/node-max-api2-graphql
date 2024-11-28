@@ -63,6 +63,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(authMiddleware);
 
 app.put("/post-image", (req, res, next) => {
+  console.log("Post image request received");
   if (!req.isAuth) {
     throw new Error("Not authenticated.");
   }
@@ -73,6 +74,8 @@ app.put("/post-image", (req, res, next) => {
   if (req.body.oldPath) {
     clearImage(req.body.oldPath);
   }
+
+  console.log("req.file.path: ", req.file.path);
   return res.status(201).json({
     message: "File stored.",
     filePath: req.file.path,

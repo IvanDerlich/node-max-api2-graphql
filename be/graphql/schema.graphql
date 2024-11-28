@@ -48,6 +48,7 @@ type PostListData {
 type RootQuery {
   login(email: String!, password: String!): AuthData!
   getPosts(page: Int!): PostListData!
+  getSinglePost(postId: ID!): Post!
 }
 
 schema {
